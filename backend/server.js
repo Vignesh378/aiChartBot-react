@@ -22,7 +22,7 @@ app.use("/api/ai", aiRouter);
 app.use("/api/auth",authRouter);
 
 
-const PORT=8000;
+const PORT=process.env.PORT || 8000;
 app.listen(PORT,()=>{
     console.log("server listening at :",PORT)
 });
