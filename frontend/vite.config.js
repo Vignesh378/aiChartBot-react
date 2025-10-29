@@ -12,5 +12,6 @@ export default defineConfig({
   preview: {
     host: true,
     port: process.env.PORT || 3000,
+    allowedHosts: ['aichartbot-react.onrender.com', '.onrender.com']
   }
 })
