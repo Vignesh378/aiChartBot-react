@@ -14,10 +14,13 @@ connectDB();
 app.use(express.json());
 app.use(cors({
     origin: process.env.NODE_ENV === 'production' 
-        ? ['https://aichartbot-react.vercel.app', 'https://aichartbot-react-git-main-vignesh378.vercel.app']
+        ? ['https://aichartbot-react.vercel.app', 'https://aichartbot-react-git-main-vignesh378.vercel.app', 'https://ai-chart-bot-react-eight.vercel.app', 'https://ai-chart-bot-react-vignesh378.vercel.app']
         : 'http://localhost:5173',
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"]
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "Accept"],
+    credentials: true,
+    preflightContinue: false,
+    optionsSuccessStatus: 204
 }));
 
 // Routes
