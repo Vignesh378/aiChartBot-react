@@ -13,5 +13,18 @@ export default defineConfig({
     host: true,
     port: process.env.PORT || 3000,
     allowedHosts: ['aichartbot-react.onrender.com', '.onrender.com']
+  },
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+    sourcemap: false,
+    minify: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+        }
+      }
+    }
   }
 })

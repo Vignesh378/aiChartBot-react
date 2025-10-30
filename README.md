@@ -7,3 +7,4 @@
 ⚡ Next-generation chatbot built on MERN with Gemini API for advanced AI responses.
 
 🌐 Modern MERN chatbot leveraging Gemini API to deliver natural and context-aware conversations.
+
