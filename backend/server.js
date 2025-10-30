@@ -28,6 +28,12 @@ app.get('/', (req, res) => {
     res.json({ message: 'Welcome to AIChartBot API' });
 });
 
+// Test route
+app.options('*', cors()); // Enable pre-flight for all routes
+app.get('/test', (req, res) => {
+    res.json({ status: 'Backend is working!' });
+});
+
 app.use("/api/ai", aiRouter);
 app.use("/api/auth", authRouter);
 
