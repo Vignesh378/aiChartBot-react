@@ -10,8 +10,11 @@ const app = express();
 // Middlewares
 app.use(express.json());
 app.use(cors({
-    origin: ['https://aichartbot-react.vercel.app', 'https://aichartbot-react-git-main-vignesh378.vercel.app', 
-             'https://ai-chart-bot-react-eight.vercel.app', 'https://ai-chart-bot-react-vignesh378.vercel.app', 
+    origin: ['https://ai-chart-bot-react-5lph-vigneshs-projects-64e3c535.vercel.app',
+             'https://ai-chart-bot-react.vercel.app', 
+             'https://ai-chart-bot-react-git-main-vigneshs-projects-64e3c535.vercel.app', 
+             'https://ai-chart-bot-react-eight.vercel.app', 
+             'https://ai-chart-bot-react-vignesh378.vercel.app', 
              'http://localhost:5173'],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "Accept"],
@@ -19,6 +22,7 @@ app.use(cors({
     preflightContinue: false,
     optionsSuccessStatus: 204
 }));
+
 
 // Database connection
 let isConnected = false;
