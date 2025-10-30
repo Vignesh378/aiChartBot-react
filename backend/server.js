@@ -7,15 +7,12 @@ import authRouter from "./routers/User.routes.js"
 
 const app = express();
 
-// Connect to database
-connectDB();
-
 // Middlewares
 app.use(express.json());
 app.use(cors({
-    origin: process.env.NODE_ENV === 'production' 
-        ? ['https://aichartbot-react.vercel.app', 'https://aichartbot-react-git-main-vignesh378.vercel.app', 'https://ai-chart-bot-react-eight.vercel.app', 'https://ai-chart-bot-react-vignesh378.vercel.app']
-        : 'http://localhost:5173',
+    origin: ['https://aichartbot-react.vercel.app', 'https://aichartbot-react-git-main-vignesh378.vercel.app', 
+             'https://ai-chart-bot-react-eight.vercel.app', 'https://ai-chart-bot-react-vignesh378.vercel.app', 
+             'http://localhost:5173'],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "Accept"],
     credentials: true,
@@ -23,24 +20,55 @@ app.use(cors({
     optionsSuccessStatus: 204
 }));
 
+// Database connection
+let isConnected = false;
+const connectToDatabase = async () => {
+    if (isConnected) return;
+    try {
+        await connectDB();
+        isConnected = true;
+        console.log('MongoDB Connected...');
+    } catch (error) {
+        console.error('MongoDB connection error:', error);
+        throw error;
+    }
+};
+
 // Routes
-app.get('/', (req, res) => {
-    res.json({ message: 'Welcome to AIChartBot API' });
+app.get('/', async (req, res) => {
+    try {
+        await connectToDatabase();
+        res.json({ message: 'Welcome to AIChartBot API' });
+    } catch (error) {
+        res.status(500).json({ message: 'Database connection failed', error: error.message });
+    }
 });
 
 // Test route
-app.options('*', cors()); // Enable pre-flight for all routes
-app.get('/test', (req, res) => {
-    res.json({ status: 'Backend is working!' });
+app.options('*', cors());
+app.get('/test', async (req, res) => {
+    try {
+        await connectToDatabase();
+        res.json({ status: 'Backend is working!' });
+    } catch (error) {
+        res.status(500).json({ message: 'Test failed', error: error.message });
+    }
 });
 
-app.use("/api/ai", aiRouter);
-app.use("/api/auth", authRouter);
+app.use("/api/ai", async (req, res, next) => {
+    await connectToDatabase();
+    next();
+}, aiRouter);
+
+app.use("/api/auth", async (req, res, next) => {
+    await connectToDatabase();
+    next();
+}, authRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).json({ message: 'Something went wrong!' });
+    res.status(500).json({ message: 'Something went wrong!', error: err.message });
 });
 
 // 404 handler
@@ -48,7 +76,13 @@ app.use((req, res) => {
     res.status(404).json({ message: 'Route not found' });
 });
 
-const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => {
-    console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
-});
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+    const PORT = process.env.PORT || 8000;
+    app.listen(PORT, () => {
+        console.log(`Server running in development mode on port ${PORT}`);
+    });
+}
+
+// For Vercel serverless deployment
+export default app;
